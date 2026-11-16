@@ -546,7 +546,9 @@ func disableKrisp() error {
 	return nil
 }
 
-func run(resourcesDir string) error {
+// patchBundle patches and re-signs the Resources dir it is given. run
+// only ever points it at a staged copy, never the live app.
+func patchBundle(resourcesDir string) error {
 	if err := installLatestVencordBuilds(); err != nil {
 		return err
 	}
@@ -595,11 +597,61 @@ func run(resourcesDir string) error {
 		return err
 	}
 	logMsg("Re-signed.")
+	return nil
+}
 
-	if err := disableKrisp(); err != nil {
+// run patches a copy of the app and swaps it in once it is fully signed.
+// Re-signing takes a minute or more, and the live bundle is not launchable
+// meanwhile (the main binary and the Electron Framework carry different
+// Team IDs, so dyld refuses to load it). Anything that starts Discord in
+// that window, Discord's own updater included, crashed at launch. The
+// live bundle now stays valid until the swap.
+func run(resourcesDir string) error {
+	liveApp := filepath.Dir(filepath.Dir(resourcesDir))
+	stagingRoot := filepath.Join(filepath.Dir(liveApp), ".discord-patching")
+	stagedApp := filepath.Join(stagingRoot, filepath.Base(liveApp))
+
+	if err := os.RemoveAll(stagingRoot); err != nil {
 		return err
 	}
-	return nil
+	if err := os.MkdirAll(stagingRoot, 0o755); err != nil {
+		return err
+	}
+	defer os.RemoveAll(stagingRoot)
+
+	logMsg("Copying " + liveApp + " to a staging bundle...")
+	if out, err := exec.Command("ditto", liveApp, stagedApp).CombinedOutput(); err != nil {
+		return fmt.Errorf("ditto failed: %w (%s)", err, strings.TrimSpace(string(out)))
+	}
+	if err := patchBundle(filepath.Join(stagedApp, "Contents", "Resources")); err != nil {
+		return err
+	}
+	if err := swapBundle(stagedApp, liveApp); err != nil {
+		return err
+	}
+	logMsg("Swapped the patched bundle into place.")
+
+	return disableKrisp()
+}
+
+// swapBundle replaces live with staged via two renames on one volume, so
+// the live path is missing for microseconds instead of invalid for
+// minutes. The previous bundle is restored if the second rename fails.
+func swapBundle(staged, live string) error {
+	old := live + ".old"
+	if err := os.RemoveAll(old); err != nil {
+		return err
+	}
+	if err := os.Rename(live, old); err != nil {
+		return err
+	}
+	if err := os.Rename(staged, live); err != nil {
+		if rerr := os.Rename(old, live); rerr != nil {
+			return fmt.Errorf("swap failed (%w) and restoring the old bundle also failed: %v", err, rerr)
+		}
+		return err
+	}
+	return os.RemoveAll(old)
 }
 
 func main() {
