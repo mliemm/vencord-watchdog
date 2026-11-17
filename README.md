@@ -2,6 +2,12 @@
 
 [![CI](https://github.com/mliem2k/vencord-watchdog/actions/workflows/ci.yml/badge.svg)](https://github.com/mliem2k/vencord-watchdog/actions/workflows/ci.yml)
 
+> **Deprecated.** This project is no longer maintained. Use
+> [Vesktop](https://github.com/Vencord/Vesktop), Vencord's own standalone Discord
+> client (install: https://vesktop.dev/install). It has Vencord built in, so there is
+> no patching, no re-signing on macOS, and nothing to re-apply after an update.
+> The text below is kept for reference only.
+
 Keeps [Vencord](https://vencord.dev) and [OpenAsar](https://github.com/GooseMod/OpenAsar)
 patched into Discord automatically, every time Discord updates.
 
