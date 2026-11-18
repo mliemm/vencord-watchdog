@@ -1,6 +1,6 @@
 # vencord-watchdog
 
-[![CI](https://github.com/mliem2k/vencord-watchdog/actions/workflows/ci.yml/badge.svg)](https://github.com/mliem2k/vencord-watchdog/actions/workflows/ci.yml)
+[![CI](https://github.com/mliemm/vencord-watchdog/actions/workflows/ci.yml/badge.svg)](https://github.com/mliemm/vencord-watchdog/actions/workflows/ci.yml)
 
 > **Deprecated.** This project is no longer maintained. Use
 > [Vesktop](https://github.com/Vencord/Vesktop), Vencord's own standalone Discord
@@ -66,7 +66,7 @@ Requirements:
 - PowerShell, run as Administrator for install/uninstall.
 
 ```powershell
-git clone https://github.com/mliem2k/vencord-watchdog.git
+git clone https://github.com/mliemm/vencord-watchdog.git
 cd vencord-watchdog/windows
 .\install-watcher.ps1          # defaults to the stable branch
 # .\install-watcher.ps1 -Branch canary   # or ptb / canary
@@ -130,7 +130,7 @@ its own patching directly (see [why](#why-macos-patches-itself-instead-of-drivin
 below), so there's nothing else to install first.
 
 ```sh
-git clone https://github.com/mliem2k/vencord-watchdog.git
+git clone https://github.com/mliemm/vencord-watchdog.git
 cd vencord-watchdog/macos
 ./install-watcher.sh                    # defaults to the stable branch
 # ./install-watcher.sh --branch canary  # or ptb / canary

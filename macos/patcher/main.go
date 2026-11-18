@@ -42,7 +42,7 @@ const (
 	vencordReleaseURL         = "https://api.github.com/repos/Vendicated/Vencord/releases/latest"
 	vencordReleaseFallbackURL = "https://vencord.dev/releases/vencord"
 	openAsarDownloadURL       = "https://github.com/GooseMod/OpenAsar/releases/download/nightly/app.asar"
-	userAgent                 = "vencord-watchdog-macos (https://github.com/mliem2k/vencord-watchdog)"
+	userAgent                 = "vencord-watchdog-macos (https://github.com/mliemm/vencord-watchdog)"
 )
 
 // Exact filenames only (not a prefix match): a GitHub release asset name
